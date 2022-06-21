@@ -1,6 +1,7 @@
 package se.lexicon.spring_boot_jpa_assignment.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +12,7 @@ public class Ingredient {
     private int id;
     @Column(nullable = false)
     private String ingredientName;
+
 
     public Ingredient() {
     }
