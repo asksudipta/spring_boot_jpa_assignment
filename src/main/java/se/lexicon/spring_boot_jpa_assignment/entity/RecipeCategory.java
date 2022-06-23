@@ -1,8 +1,7 @@
 package se.lexicon.spring_boot_jpa_assignment.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class RecipeCategory {
@@ -11,9 +10,8 @@ public class RecipeCategory {
     private int id;
     private String category;
 
-    @OneToMany(mappedBy = "recipeCategories")
-    @JoinTable(name = "recipe_recipe_category")
-    @JoinColumn(name = "recipe_category_id")
+    @ManyToMany(mappedBy = "recipeCategories",
+            fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private Set<Recipe> recipes;
 
     public RecipeCategory() {
@@ -25,8 +23,25 @@ public class RecipeCategory {
     }
 
     public RecipeCategory(int id, String category, Set<Recipe> recipes) {
-        this( category, recipes);
+        this(category, recipes);
         this.id = id;
+    }
+
+    public void addRecipe(Recipe recipe) {
+        if (recipe == null) throw new IllegalArgumentException("Recipe value is null");
+        if (recipes == null) recipes = new HashSet<>(recipes);
+
+        if (!recipes.contains(recipe)) recipes.add(recipe);
+
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        if (recipe == null) throw new IllegalArgumentException("Recipe value is null");
+        if (recipes == null) recipes = new HashSet<>(recipes);
+
+        // List<Recipe> recipeList = new ArrayList<>(recipes);
+        if (!recipes.contains(recipe)) recipes.remove(recipe);
+
     }
 
     public int getId() {
@@ -71,7 +86,6 @@ public class RecipeCategory {
         return "RecipeCategory{" +
                 "id=" + id +
                 ", category='" + category + '\'' +
-                ", recipes=" + recipes +
                 '}';
     }
 }

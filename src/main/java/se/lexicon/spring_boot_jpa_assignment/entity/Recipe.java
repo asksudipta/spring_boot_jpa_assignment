@@ -1,10 +1,7 @@
 package se.lexicon.spring_boot_jpa_assignment.entity;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Recipe {
@@ -14,15 +11,16 @@ public class Recipe {
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="instructions_id")
+    @JoinColumn(name = "instructions_id")
     private RecipeInstruction recipeInstruction;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(fetch = FetchType.LAZY
+            ,mappedBy = "recipe"
+            ,cascade = {CascadeType.MERGE,CascadeType.DETACH}
+            ,orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients;
 
-   @ManyToOne
-    @JoinTable(name = "recipe_recipe_category")
-    @JoinColumn(name = "recipe_id")
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<RecipeCategory> recipeCategories;
 
 
@@ -40,6 +38,41 @@ public class Recipe {
         this(name, recipeIngredients, recipeInstruction, recipeCategories);
         this.id = id;
     }
+
+    //Implements Convenient methods:
+    public void AddRecipeCategory(RecipeCategory recipeCategory){
+        if (recipeCategory==null)throw new IllegalArgumentException("RecipeCategory value is null");
+        if(recipeCategories==null)recipeCategories=new HashSet<>(recipeCategories);
+
+        if (!recipeCategories.contains(recipeCategory))recipeCategories.add(recipeCategory);
+    }
+    public void removeRecipeCategory(RecipeCategory recipeCategory){
+        if (recipeCategory==null)throw new IllegalArgumentException("RecipeCategory value is null");
+        if(recipeCategories==null)recipeCategories=new HashSet<>(recipeCategories);
+
+        if (!recipeCategories.contains(recipeCategory))recipeCategories.remove(recipeCategory);
+
+    }
+
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient){
+        if (recipeIngredients==null)recipeIngredients=new ArrayList<>();
+        if (!recipeIngredients.contains(recipeIngredient))
+        {
+            recipeIngredient.setRecipe(this);
+            recipeIngredients.add(recipeIngredient);
+        }
+    }
+
+    public void removeRecipeIngredient(RecipeIngredient recipeIngredient){
+
+        if (recipeIngredients==null)recipeIngredients=new ArrayList<>();
+        if (!recipeIngredients.contains(recipeIngredient))
+        {
+            recipeIngredient.setRecipe(null);
+            recipeIngredients.remove(recipeIngredient);
+        }
+    }
+
 
     public int getId() {
         return id;
@@ -99,9 +132,7 @@ public class Recipe {
         return "Recipe{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipeIngredients=" + recipeIngredients +
                 ", recipeInstruction=" + recipeInstruction +
-                ", recipeCategories=" + recipeCategories +
                 '}';
     }
 }

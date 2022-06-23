@@ -1,5 +1,6 @@
 package se.lexicon.spring_boot_jpa_assignment.entity;
 
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,13 +13,15 @@ public class RecipeIngredient {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", updatable = false, nullable = false)
-    private int id;
+    private String id;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH,CascadeType.MERGE})
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
@@ -29,7 +32,7 @@ public class RecipeIngredient {
     public RecipeIngredient() {
     }
 
-    public RecipeIngredient(int id, Ingredient ingredient, double amount, Measurement measurement, Recipe recipe) {
+    public RecipeIngredient(String id, Ingredient ingredient, double amount, Measurement measurement, Recipe recipe) {
         this(ingredient, amount, measurement, recipe);
         this.id = id;
     }
@@ -41,11 +44,11 @@ public class RecipeIngredient {
         setAmount(amount);
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -98,10 +101,7 @@ public class RecipeIngredient {
     public String toString() {
         return "RecipeIngredient{" +
                 "id=" + id +
-                ", ingredient=" + ingredient +
-                ", amount=" + amount +
                 ", measurement=" + measurement +
-                ", recipe=" + recipe +
                 '}';
     }
 }
