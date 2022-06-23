@@ -7,9 +7,10 @@ import java.util.List;
 
 public interface IngredientRepository extends CrudRepository<Ingredient,Integer> {
 
-   Ingredient searchIngredientsByIngredientNameEquals(String ingredientName);
+   Ingredient searchByIngredientName(String ingredientName);
 
-   List<Ingredient> searchByIngredientNameContains(String ingredientName);
+   List<Ingredient> searchAllByIngredientName(String ingredientName);
+
 
 }
 

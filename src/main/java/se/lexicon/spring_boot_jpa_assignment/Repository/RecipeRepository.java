@@ -10,16 +10,16 @@ import java.util.Set;
 
 public interface RecipeRepository extends CrudRepository<Recipe,Integer> {
 
-    List<Recipe> searchRecipesByNameContains(String name);
-            // select * from table where name like '%:enter_string%';
+    List<Recipe> searchRecipesByName(String name);
 
     //Search for all recipes that contains a specified ingredient name. e.g. potato, tomato, salt, etc.
-    List<Recipe> searchRecipesByIngredientsContains(String ingredientName);
+    List<Recipe> searchRecipesByIngredientsName(String ingredientName);
 
     //Search for all recipes that belong to a specific recipe category.
     // e.g. Chicken, Vegan, Celebration, Weekend etc.
-    List<Recipe> searchRecipesByRecipeCategories(Set<RecipeCategory> recipeCategories);
+    List<Recipe> searchRecipeByCategory(String recipeIngredients);
 
     //Search for all recipes that match one or more categories. e.g. {”Spicy”,”Mexican”,”Weekend”}
-    List<Recipe> searchRecipeByRecipeCategoriesMatches(Set<RecipeCategory> recipeCategories);
+    List<Recipe> searchAllRecipes(RecipeCategory recipeCategory);
+
 }
