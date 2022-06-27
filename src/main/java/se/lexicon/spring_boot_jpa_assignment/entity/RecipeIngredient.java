@@ -21,7 +21,7 @@ public class RecipeIngredient {
     private Ingredient ingredient;
 
     @ManyToOne(fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH,CascadeType.MERGE})
+            cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
